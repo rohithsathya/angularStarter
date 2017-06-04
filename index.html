@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+    <script>
+        //inputs
+        // App Name
+        // Controller Name
+
+        var app = angular.module('myApp', ['ngRoute']);
+        app.controller('myController', function ($scope) {
+            $scope.title = "First App";
+            $scope.appName = 'ajApp';
+            $scope.ctrlName = 'ajController';
+            $scope.createApp = function () {
+                // Make module Foo
+                var newApp = angular.module($scope.appName, ['ngRoute']);
+                // Make controller Ctrl in module Foo
+                angular.module($scope.appName).controller($scope.ctrlName, function ($scope) {
+                    $scope.name = 'DeathCarrot'
+                });
+                // Load an element that uses controller Ctrl
+                $('<div ng-controller="' + $scope.ctrlName + '">{{name}} <div ng-view></div></div>').appendTo('#app_section');
+
+                //routing
+                angular.module($scope.appName).config(function ($routeProvider) {
+                    $routeProvider
+                        .when("/", {
+                            template: "<h3>New App Home Page</h3>"
+                        })
+                        .when("/page1", {
+                            template: "<h3>New App Page 1</h3>"
+                        })
+                        .otherwise({
+                            template: "<h3>New App Default Page</h3>"
+                        });
+                });
+
+
+
+
+
+                // Bootstrap with Foo
+                angular.bootstrap($('#app_section'), [$scope.appName]);
+
+
+
+
+
+
+            }
+
+
+        });
+        app.directive('pages', function () {
+            return {
+                restrict: 'AEC',
+                transclude: true,
+                scope: { title: '@' },
+                link: function (scope, element, attrs) {
+                },
+                template: '<div>'
+                + '<h3>{{title}}</h3>'
+                + '<p ng-transclude></p>'
+                + '</div>',
+
+            };
+        })
+        // app.config(function ($routeProvider) {
+        //     $routeProvider
+        //         .when("/", {
+        //             template: "<pages title='Home'> this is home page</pages>"
+        //         })
+        //         .when("/page1", {
+        //             template: "<pages title='Page 1'> this is page 1</pages>"
+        //         })
+        //         .otherwise({
+        //             template: "<pages title='Default'> this is default page</pages>"
+        //         });
+        // });
+    </script>
+</head>
+
+<body>
+
+    <div style="width:100%;float:left">
+        <div style="width:50%;float:left" ng-app="myApp" ng-controller="myController">
+            <h3>CREATE NEW APP</h3>
+            <label>App Name:</label>
+            <input type="text" ng-model="appName" placeholder="Enter a App here">
+            <hr/>
+
+            <label>Controller Name:</label>
+            <input type="text" ng-model="ctrlName" placeholder="Enter a App here">
+            <hr/>
+
+            <button ng-click="createApp()">CREATE</button>
+
+
+            <h3>{{title}}</h3>
+            <div ng-view></div>
+
+
+
+
+        </div>
+        <div id="app_section" style="width:50%;float:left;box-shadow: -3px 3px 5px 0px rgba(163,163,163,0.73);min-height:500px">
+            <h3>App section</h3>
+        </div>
+
+    </div>
+
+
+
+</body>
+
+</html>
